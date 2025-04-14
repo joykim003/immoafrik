@@ -1,0 +1,76 @@
+@keyframes kenBurns {
+    from {
+        transform: scale(1);
+    }
+    to {
+        transform: scale(1.1);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideShow {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    25% { opacity: 1; }
+    45% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.animate-ken-burns {
+    animation: kenBurns 20s ease-out infinite alternate;
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.animate-fade-in-up-delay {
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+    opacity: 0;
+}
+
+.animate-fade-in-up-delay-2 {
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+    opacity: 0;
+}
+
+.animate-title {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out forwards;
+}
+
+.animate-title-delay {
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.2s forwards;
+}
+
+.animate-on-scroll {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease-out;
+}
+
+.animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.animate-slide-show img {
+    animation: slideShow 24s infinite;
+    opacity: 0;
+}
+
+.animate-slide-show img:nth-child(1) { animation-delay: 0s; }
+.animate-slide-show img:nth-child(2) { animation-delay: 6s; }
+.animate-slide-show img:nth-child(3) { animation-delay: 12s; }
+.animate-slide-show img:nth-child(4) { animation-delay: 18s; }
