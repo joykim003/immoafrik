@@ -1,0 +1,83 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Contacter {{ contact_info.name }} - ImmoBénin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- Navigation -->
+        <nav class="mb-8">
+            <a href="{% url 'properties:detail' pk=property.id %}" class="text-blue-600 hover:underline">
+                <i class="fas fa-arrow-left mr-2"></i>Retour au bien
+            </a>
+        </nav>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                Contacter pour : {{ property.title }}
+            </h1>
+
+            <div class="space-y-6">
+                <!-- Informations du contact -->
+                <div class="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <h2 class="font-semibold text-lg mb-4 text-gray-900 dark:text-white">
+                        {{ contact_info.name }}
+                        {% if contact_info.is_admin %}
+                            <span class="ml-2 px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 text-sm rounded-full">
+                                Administrateur
+                            </span>
+                        {% endif %}
+                    </h2>
+                </div>
+
+                <!-- Liste des contacts -->
+                <div class="space-y-4">
+                    {% if contact_info.email %}
+                    <a href="mailto:{{ contact_info.email }}" 
+                       class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
+                        <i class="fas fa-envelope text-2xl text-blue-600 dark:text-blue-400 mr-4"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">Email</p>
+                            <p class="text-blue-600 dark:text-blue-400">{{ contact_info.email }}</p>
+                        </div>
+                    </a>
+                    {% endif %}
+
+                    {% if contact_info.phone %}
+                    <a href="tel:{{ contact_info.phone }}" 
+                       class="flex items-center p-4 bg-green-50 dark:bg-green-900 rounded-lg hover:bg-green-100 dark:hover:bg-green-800 transition-colors">
+                        <i class="fas fa-phone text-2xl text-green-600 dark:text-green-400 mr-4"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">Téléphone</p>
+                            <p class="text-green-600 dark:text-green-400">{{ contact_info.phone }}</p>
+                        </div>
+                    </a>
+                    {% endif %}
+
+                    {% if contact_info.whatsapp %}
+                    <a href="https://wa.me/{{ contact_info.whatsapp }}" target="_blank"
+                       class="flex items-center p-4 bg-green-50 dark:bg-green-900 rounded-lg hover:bg-green-100 dark:hover:bg-green-800 transition-colors">
+                        <i class="fab fa-whatsapp text-2xl text-green-600 dark:text-green-400 mr-4"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">WhatsApp</p>
+                            <p class="text-green-600 dark:text-green-400">{{ contact_info.whatsapp }}</p>
+                        </div>
+                    </a>
+                    {% endif %}
+
+                    {% if contact_info.messenger %}
+                    <a href="{{ contact_info.messenger }}" target="_blank"
+                       class="flex items-center p-4 bg-blue-50 dark:bg-blue-900 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
+                        <i class="fab fa-facebook-messenger text-2xl text-blue-600 dark:text-blue-400 mr-4"></i>
+                        <div>
+                            <p class="font-semibold text-gray-900 dark:text-white">Messenger</p>
+                            <p class="text-blue-600 dark:text-blue-400">Contacter sur Messenger</p>
+                        </div>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

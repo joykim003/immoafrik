@@ -1,0 +1,235 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block title %}Tableau de bord - ImmoBénin{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8">Tableau de bord</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-transform hover:scale-105 duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Biens visités</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ visited_properties_count }}</h3>
+                </div>
+                <div class="p-3 bg-blue-100 dark:bg-blue-900 rounded-full">
+                    <i class="fas fa-eye text-blue-600 dark:text-blue-300 text-xl"></i>
+                </div>
+            </div>
+            <a href="#" class="mt-4 block text-blue-500 dark:text-blue-400 hover:underline text-sm">Voir l'historique</a>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-transform hover:scale-105 duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Favoris</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ favorites_count }}</h3>
+                </div>
+                <div class="p-3 bg-red-100 dark:bg-red-900 rounded-full">
+                    <i class="fas fa-heart text-red-600 dark:text-red-300 text-xl"></i>
+                </div>
+            </div>
+             <a href="#" class="mt-4 block text-blue-500 dark:text-blue-400 hover:underline text-sm">Voir les favoris</a>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-transform hover:scale-105 duration-300">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Messages</p>
+                    <h3 class="text-2xl font-bold text-gray-900 dark:text-white">{{ messages_count }}</h3>
+                </div>
+                <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
+                    <i class="fas fa-envelope text-green-600 dark:text-green-300 text-xl"></i>
+                </div>
+            </div>
+            <a href="#" class="mt-4 block text-blue-500 dark:text-blue-400 hover:underline text-sm">Voir les messages</a>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8" x-data="{ showForm: false }">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Mes Propriétés</h2>
+            <button @click="showForm = !showForm" 
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors duration-300 flex items-center space-x-2">
+                <i class="fas fa-plus"></i>
+                <span>Nouvelle propriété</span>
+            </button>
+        </div>
+
+        <!-- Formulaire de création -->
+        <div x-show="showForm" 
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 transform -translate-y-2"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-300"
+             x-transition:leave-start="opacity-100 transform translate-y-0"
+             x-transition:leave-end="opacity-0 transform -translate-y-2"
+             class="mb-8">
+            <form method="POST" action="{% url 'properties:create' %}" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Titre</label>
+                        <input type="text" name="title" required
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Type de bien</label>
+                        <select name="property_type" required
+                                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                            <option value="house">Maison</option>
+                            <option value="apartment">Appartement</option>
+                            <option value="land">Terrain</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Prix (FCFA)</label>
+                        <input type="number" name="price" required
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Localisation</label>
+                        <input type="text" name="location" required
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Description</label>
+                        <textarea name="description" rows="4" required
+                                  class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"></textarea>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Images</label>
+                        <input type="file" name="image" accept="image/*" required
+                               class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="togglePropertyForm()"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Annuler
+                    </button>
+                    <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                        Publier
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Liste des propriétés -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for property in user_properties %}
+                <div class="bg-white dark:bg-gray-700 rounded-lg shadow-md overflow-hidden">
+                    <img src="{{ property.image.url }}" alt="{{ property.title }}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">{{ property.title }}</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mb-2">{{ property.location }}</p>
+                        <p class="text-blue-600 dark:text-blue-400 font-bold">{{ property.price }} FCFA</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <span class="text-sm text-gray-500 dark:text-gray-400">
+                                Publié le {{ property.created_at|date:"d/m/Y" }}
+                            </span>
+                            <div class="space-x-2">
+                                <a href="{% url 'properties:edit' pk=property.pk %}" 
+                                   class="inline-block px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button onclick="deleteProperty({{ property.pk }})"
+                                        class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="col-span-full text-center text-gray-500 dark:text-gray-400 py-4">
+                    Vous n'avez pas encore publié de propriété
+                </p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Activités récentes</h2>
+        <div class="space-y-4">
+            {% for activity in recent_activities %}
+                <div class="flex items-start space-x-4 p-4 rounded-lg transition-colors duration-200 hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <div class="flex-shrink-0">
+                        <div class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center">
+                            <i class="fas fa-home text-blue-600 dark:text-blue-300 text-xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900 dark:text-white">{{ activity.description }}</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ activity.created_at|timesince }}</p>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="text-gray-500 dark:text-gray-400 text-center py-4">Aucune activité récente</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">Vos biens favoris</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for property in favorite_properties %}
+                <div class="bg-white dark:bg-gray-700 border rounded-lg overflow-hidden shadow-md transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                    <a href="{% url 'properties:detail' pk=property.pk %}">
+                        <img src="{{ property.image.url }}" alt="{{ property.title }}" class="w-full h-48 object-cover rounded-t-lg">
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg mb-2 text-gray-900 dark:text-white">{{ property.title }}</h3>
+                            <p class="text-gray-600 dark:text-gray-400">{{ property.location }}</p>
+                            <p class="text-blue-600 dark:text-blue-400 font-bold mt-2">{{ property.price }} FCFA</p>
+                        </div>
+                    </a>
+                    <div class="p-4 border-t border-gray-200 dark:border-gray-600 flex justify-between items-center">
+                         <span class="text-sm text-gray-500 dark:text-gray-400">Ajouté le: {{ property.created_at|date:"d M Y" }}</span>
+                         <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-xs transition-colors duration-300 dark:bg-red-700 dark:hover:bg-red-600" onclick="removeFromFavorites({{ property.id }})">
+                            <i class="fas fa-heart-broken mr-2"></i>Retirer
+                        </button>
+                    </div>
+                </div>
+            {% empty %}
+                <p class="col-span-full text-gray-500 dark:text-gray-400 text-center py-4">Aucun bien en favoris</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePropertyForm() {
+    const form = document.getElementById('propertyForm');
+    form.classList.toggle('hidden');
+}
+
+async function deleteProperty(propertyId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette propriété ?')) {
+        try {
+            const response = await fetch(`/properties/${propertyId}/delete/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                }
+            });
+            if (response.ok) {
+                window.location.reload();
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+        }
+    }
+}
+</script>
+{% endblock %}

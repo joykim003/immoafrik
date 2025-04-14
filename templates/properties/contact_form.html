@@ -1,0 +1,55 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Contacter le vendeur - {{ property.title }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+                Contacter le vendeur pour : {{ property.title }}
+            </h2>
+
+            <div class="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    <span class="font-semibold">Vendeur :</span> 
+                    {{ property.seller.get_full_name|default:property.seller.username }}
+                </p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">
+                    <span class="font-semibold">Type de vendeur :</span> 
+                    {{ property.get_seller_type_display }}
+                </p>
+            </div>
+
+            <form method="POST" class="space-y-6">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="text-red-500 text-sm mt-1">
+                        {{ field.errors|join:", " }}
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+
+                <div class="flex justify-end space-x-4">
+                    <a href="{% url 'properties:detail' pk=property.id %}" 
+                       class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700">
+                        Annuler
+                    </a>
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300">
+                        Envoyer le message
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

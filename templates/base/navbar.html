@@ -1,0 +1,106 @@
+{% load static %}
+
+<nav class="bg-white shadow-md relative" x-data="{ isOpen: false }">
+    <div class="container mx-auto px-4 py-4">
+        <div class="flex justify-between items-center">
+            <!-- Logo -->
+            <a href="{% url 'core:home' %}" class="font-bold text-xl text-blue-600">
+                🏠 ImmoBénin
+            </a>
+
+            <!-- Menu principal (desktop) -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="{% url 'properties:list' %}" class="text-gray-700 hover:text-blue-600">Nos Biens</a>
+                <a href="{% url 'properties:search' %}" class="text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-search mr-1"></i>Rechercher
+                </a>
+                <a href="{% url 'core:about' %}" class="text-gray-700 hover:text-blue-600">À propos</a>
+                <a href="{% url 'core:contact' %}" class="text-gray-700 hover:text-blue-600">Contact</a>
+            </div>
+
+            <!-- Menu utilisateur (desktop) -->
+            <div class="hidden md:flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{% url 'users:dashboard' %}" class="text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-chart-line mr-1"></i>Dashboard
+                        </a>
+                        <a href="{% url 'users:profile' %}" class="text-gray-700 hover:text-blue-600">
+                            <i class="fas fa-user-circle mr-1"></i>{{ user.username }}
+                        </a>
+                        <form method="post" action="{% url 'users:logout' %}" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Déconnexion
+                            </button>
+                        </form>
+                    </div>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-sign-in-alt mr-1"></i>Connexion
+                    </a>
+                    <a href="{% url 'users:signup' %}" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-user-plus mr-1"></i>Inscription
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Bouton menu mobile -->
+            <button @click="isOpen = !isOpen" 
+                    class="md:hidden text-gray-700 hover:text-blue-600 focus:outline-none">
+                <i class="fas" :class="isOpen ? 'fa-times text-xl' : 'fa-bars text-xl'"></i>
+            </button>
+        </div>
+
+        <!-- Menu mobile -->
+        <div class="absolute top-full left-0 right-0 bg-white shadow-lg md:hidden z-50"
+             x-show="isOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 transform -translate-y-2"
+             x-transition:enter-end="opacity-100 transform translate-y-0"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 transform translate-y-0"
+             x-transition:leave-end="opacity-0 transform -translate-y-2"
+             @click.away="isOpen = false"
+             style="display: none;">
+            <div class="px-4 py-2 space-y-2">
+                <a href="{% url 'properties:list' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                    Nos Biens
+                </a>
+                <a href="{% url 'properties:search' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                    <i class="fas fa-search mr-1"></i>Rechercher
+                </a>
+                <a href="{% url 'core:about' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                    À propos
+                </a>
+                <a href="{% url 'core:contact' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                    Contact
+                </a>
+
+                <hr class="my-2">
+                
+                {% if user.is_authenticated %}
+                    <a href="{% url 'users:dashboard' %}" class="block px-3 py-2 text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-chart-line mr-1"></i>Dashboard
+                    </a>
+                    <a href="{% url 'users:profile' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-user-circle mr-1"></i>{{ user.username }}
+                    </a>
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left py-2 text-red-600 hover:text-red-700">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Déconnexion
+                        </button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'users:login' %}" class="block py-2 text-gray-700 hover:text-blue-600">
+                        <i class="fas fa-sign-in-alt mr-1"></i>Connexion
+                    </a>
+                    <a href="{% url 'users:signup' %}" class="block py-2 text-blue-600 hover:text-blue-700">
+                        <i class="fas fa-user-plus mr-1"></i>Inscription
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

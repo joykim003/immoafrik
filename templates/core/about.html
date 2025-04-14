@@ -1,0 +1,33 @@
+{% extends 'base/base.html' %}
+
+{% block title %}À propos - ImmoBénin{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold mb-8">{{ title }}</h1>
+    
+    <div class="bg-white rounded-lg shadow-md p-8">
+        <p class="text-lg mb-6">{{ description }}</p>
+        
+        <div class="grid md:grid-cols-3 gap-8 mt-12">
+            <div class="text-center">
+                <div class="text-3xl mb-4">🏠</div>
+                <h3 class="font-bold mb-2">Large Sélection</h3>
+                <p>Des centaines de biens disponibles dans tout le Bénin.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="text-3xl mb-4">💎</div>
+                <h3 class="font-bold mb-2">Qualité Garantie</h3>
+                <p>Tous nos biens sont vérifiés et validés par nos experts.</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="text-3xl mb-4">🤝</div>
+                <h3 class="font-bold mb-2">Service Client</h3>
+                <p>Une équipe dédiée à votre écoute 7j/7.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

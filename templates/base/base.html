@@ -1,0 +1,136 @@
+{% load static %}
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="fr" x-data="{ darkMode: localStorage.getItem('darkMode') === 'true' }" 
+      :class="{ 'dark': darkMode }">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{% block title %}ImmoBénin{% endblock %}</title>
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static '/output.css' %}">
+  <script src="{% static 'cdn/htmx.min.js' %}"></script>
+  <script src="{% static 'cdn/alpine.min.js' %}" defer></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ 
+  {% tailwind_css %}
+
+  <style>
+    body {
+        font-family: 'Inter', sans-serif;
+        transition: background-color 0.5s ease;
+    }
+    .theme-switch-button {
+        transition: background-color 0.3s ease;
+        border-radius: 9999px;
+        padding: 0.75rem;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    }
+    .theme-switch-button:hover {
+        background-color: rgba(167, 139, 250, 0.7);
+    }
+    .dark body {
+        background-color: #111827;
+        color: #e5e7eb;  /* Gris clair pour le texte principal */
+    }
+    .dark .bg-white {
+        background-color: #1f2937;
+        color: #e5e7eb;
+    }
+    .dark .text-gray-700 {
+        color: #d1d5db;  /* Gris plus clair pour meilleure lisibilité */
+    }
+    .dark .text-gray-600 {
+        color: #9ca3af;  /* Gris moyen pour le texte secondaire */
+    }
+    .dark .text-gray-500 {
+        color: #6b7280;  /* Gris plus foncé pour le texte tertiaire */
+    }
+    .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+        color: #f3f4f6;  /* Presque blanc pour les titres */
+    }
+    .dark a {
+        color: #60a5fa;  /* Bleu clair pour les liens */
+    }
+    .dark a:hover {
+        color: #93c5fd;  /* Bleu plus clair au survol */
+    }
+    .dark .border-gray-300 {
+        border-color: #374151;  /* Gris plus visible pour les bordures */
+    }
+    .dark input, .dark textarea, .dark select {
+        background-color: #374151;
+        color: #e5e7eb;
+        border-color: #4b5563;
+    }
+    .dark input::placeholder, .dark textarea::placeholder {
+        color: #9ca3af;  /* Gris moyen pour les placeholders */
+    }
+  </style>
+
+  <!-- Alpine.js -->
+  <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 transition-colors duration-200"
+      :class="{ 'bg-gray-900 text-white': darkMode }">
+
+  <!-- Bouton de changement de thème -->
+  <div class="fixed bottom-4 right-4 z-50">
+      <button @click="darkMode = !darkMode; localStorage.setItem('darkMode', darkMode)"
+              class="theme-switch-button bg-purple-500 hover:bg-purple-600 text-white">
+          <svg x-show="!darkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+          <svg x-show="darkMode" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707" />
+          </svg>
+      </button>
+  </div>
+
+  {% include 'base/navbar.html' %}
+  
+  <main class="container mx-auto py-8">
+    {% if messages %}
+        <div class="mb-8">
+            {% for message in messages %}
+                <div class="{% if message.tags == 'success' %}bg-green-100 dark:bg-green-800 border-green-400 text-green-700 dark:text-green-100{% else %}bg-red-100 dark:bg-red-800 border-red-400 text-red-700 dark:text-red-100{% endif %} px-4 py-3 rounded relative" role="alert">
+                    <span class="block sm:inline">{{ message }}</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include 'base/footer.html' %}
+
+  {% block extra_js %}
+  <script>
+  async function deleteProperty(propertyId) {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cette propriété ?')) {
+          try {
+              const response = await fetch(`/properties/${propertyId}/delete/`, {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                  }
+              });
+              if (response.ok) {
+                  window.location.reload();
+              }
+          } catch (error) {
+              console.error('Erreur:', error);
+          }
+      }
+  }
+  </script>
+  {% endblock %}
+</body>
+</html>
